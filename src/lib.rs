@@ -66,6 +66,9 @@ pub struct TokenBucket {
 /// Represents the acquisition result from a call to 
 /// [TokenBucket.acquire()](struct.TokenBucket.html#method.acquire).
 ///
+/// Err() is called if the number of tokens desired is not currently
+/// available in the bucket. Otherwise, Ok() is called.
+///
 /// Both Ok() and Err() will supply the current rate of the Bucket in
 /// tokens acquired per second.
 pub type TokenAcquisitionResult = Result<f64, f64>;
