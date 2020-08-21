@@ -1,10 +1,10 @@
 [package]
 name = "tokenbucket"
 description = "Provies a token-bucket algorithm with a simple API."
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Nathan Fiscaletti <nate.fiscaletti@gmail.com>"]
 edition = "2018"
-documentation = "https://docs.rs/tokenbucket/0.1.2/tokenbucket/"
+documentation = "https://docs.rs/tokenbucket/"
 homepage = "https://github.com/nathan-fiscaletti/tokenbucket-rs"
 license = "MIT"
 

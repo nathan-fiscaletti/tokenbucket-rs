@@ -51,7 +51,8 @@ pub struct TokenBucket {
     r:      f64,
     // Represents the "burst" value for the bucket. This is the
     // maximum number of tokens that can be consumed at one time when
-    // the bucket is full.
+    // the bucket is full. It can also be described as the maximum
+    // volume of the bucket.
     b:      f64,
     // Represents the number of tokens currently available for
     // acquisition in the bucket.
@@ -79,11 +80,14 @@ impl TokenBucket {
     /// # Arguments
     ///
     /// * `r` -  The number of tokens that should be added to the
-    ///          bucket every second.
+    ///          bucket every second. This can also be described as
+    ///          the maximum rate per second that the bucket can
+    ///          sustain before rate limiting.
     ///
     /// * `b` - The "burst" value for the bucket. This is the maximum
     ///         number of tokens that can be consumed at one time when
-    ///         the bucket is full.
+    ///         the bucket is full. It can also be desribed as the
+    ///         maximum volume of the bucket.
     ///
     /// # Example
     ///
