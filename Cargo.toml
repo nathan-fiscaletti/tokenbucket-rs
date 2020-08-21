@@ -4,8 +4,9 @@ description = "Provies a token-bucket algorithm with a simple API."
 version = "0.1.0"
 authors = ["Nathan Fiscaletti <nate.fiscaletti@gmail.com>"]
 edition = "2018"
+documentation = "https://docs.rs/tokenbucket/0.1.0/tokenbucket/"
 homepage = "https://github.com/nathan-fiscaletti/tokenbucket-rs"
-license-file = "LICENSE"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
