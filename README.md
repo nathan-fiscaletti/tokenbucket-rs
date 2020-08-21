@@ -1,6 +1,6 @@
 # tokenbucket
 
-[![Documentation](https://img.shields.io/badge/docs.rs-Open-blue)](https://docs.rs/tokenbucket/)
+[![Documentation](https://img.shields.io/badge/docs.rs-view%20documentation-blue)](https://docs.rs/tokenbucket/)
 [![GitHub license](https://img.shields.io/github/license/nathan-fiscaletti/tokenbucket-rs)](https://github.com/nathan-fiscaletti/tokenbucket-rs/blob/master/LICENSE)
 
 This library provides a TokenBucket Algorithm implementation for the Rust programming language.
