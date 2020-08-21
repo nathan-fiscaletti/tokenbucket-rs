@@ -6,7 +6,7 @@
 
 This library provides a TokenBucket Algorithm implementation for the Rust programming language.
 
-## Instalation
+## Install
 
 Add the following to your Cargo.toml
 
