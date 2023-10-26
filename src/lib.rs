@@ -4,8 +4,8 @@
 //! # Short Example Program
 //!
 //! ```no_run
-//! use rate::TokenBucket;
-//! use rate::TokenAcquisitionResult;
+//! use tokenbucket::TokenBucket;
+//! use tokenbucket::TokenAcquisitionResult;
 //! use std::{thread, time};
 //! 
 //! // Will acquire tokens at the specified rate for the specified duration.
@@ -41,7 +41,6 @@
 //! ```
 
 use std::time::SystemTime;
-use std::sync::Mutex;
 
 /// Represents a thread-safe token bucket object.
 pub struct TokenBucket {
@@ -60,8 +59,6 @@ pub struct TokenBucket {
     // Represents the last time at which one or more tokens was
     // acquired from the bucket.
     last:   SystemTime,
-    // A mutex used for locking token acquisition calls on the bucket.
-    mux:    Mutex<u32>,
 }
 
 /// Represents the acquisition result from a call to 
@@ -92,6 +89,7 @@ impl TokenBucket {
     /// # Example
     ///
     /// ```
+    /// # use tokenbucket::TokenBucket;
     /// let mut tb = TokenBucket::new(5.0, 100.0);
     /// ```
     pub fn new(r: f64, b: f64) -> TokenBucket {
@@ -100,7 +98,6 @@ impl TokenBucket {
             b,
             tokens: b,
             last: SystemTime::now(),
-            mux: Mutex::new(0u32),
         }
     }
 
@@ -120,7 +117,7 @@ impl TokenBucket {
     ///    3. The tokens will never exceed the maximum burst value
     ///        configured in `self.b`, nor will it be less than 0.
     ///
-    /// ```
+    /// ```ignore
     /// self.tokens = min { b, max { 0, tokens + rS - count } }
     /// ```
     ///
@@ -131,14 +128,14 @@ impl TokenBucket {
     /// # Example
     ///
     /// ```
+    /// # use tokenbucket::TokenBucket;
     /// let mut token_bucket = TokenBucket::new(5.0, 100.0);
     /// match token_bucket.acquire(1.0) {
-    ///    Ok(rate)  => println!("acquired: rate = {}", rate)
-    ///    Err(rate) => println!("rate limited: rate = {}", rate)
-    /// }
+    ///    Ok(rate)  => println!("acquired: rate = {}", rate),
+    ///    Err(rate) => println!("rate limited: rate = {}", rate),
+    /// };
     /// ```
     pub fn acquire(&mut self, count: f64) -> TokenAcquisitionResult {
-        let _guard = self.mux.lock();
         let now = SystemTime::now();
         let duration_ms: u128 = now.duration_since(self.last)
                                    .expect("clock went backwards")
