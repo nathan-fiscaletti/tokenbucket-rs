@@ -41,7 +41,6 @@
 //! ```
 
 use std::time::SystemTime;
-use std::sync::Mutex;
 
 /// Represents a thread-safe token bucket object.
 pub struct TokenBucket {
@@ -60,8 +59,6 @@ pub struct TokenBucket {
     // Represents the last time at which one or more tokens was
     // acquired from the bucket.
     last:   SystemTime,
-    // A mutex used for locking token acquisition calls on the bucket.
-    mux:    Mutex<u32>,
 }
 
 /// Represents the acquisition result from a call to 
@@ -100,7 +97,6 @@ impl TokenBucket {
             b,
             tokens: b,
             last: SystemTime::now(),
-            mux: Mutex::new(0u32),
         }
     }
 
@@ -138,7 +134,6 @@ impl TokenBucket {
     /// }
     /// ```
     pub fn acquire(&mut self, count: f64) -> TokenAcquisitionResult {
-        let _guard = self.mux.lock();
         let now = SystemTime::now();
         let duration_ms: u128 = now.duration_since(self.last)
                                    .expect("clock went backwards")
