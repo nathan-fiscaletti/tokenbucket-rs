@@ -4,8 +4,8 @@
 //! # Short Example Program
 //!
 //! ```no_run
-//! use rate::TokenBucket;
-//! use rate::TokenAcquisitionResult;
+//! use tokenbucket::TokenBucket;
+//! use tokenbucket::TokenAcquisitionResult;
 //! use std::{thread, time};
 //! 
 //! // Will acquire tokens at the specified rate for the specified duration.
@@ -89,6 +89,7 @@ impl TokenBucket {
     /// # Example
     ///
     /// ```
+    /// # use tokenbucket::TokenBucket;
     /// let mut tb = TokenBucket::new(5.0, 100.0);
     /// ```
     pub fn new(r: f64, b: f64) -> TokenBucket {
@@ -116,7 +117,7 @@ impl TokenBucket {
     ///    3. The tokens will never exceed the maximum burst value
     ///        configured in `self.b`, nor will it be less than 0.
     ///
-    /// ```
+    /// ```ignore
     /// self.tokens = min { b, max { 0, tokens + rS - count } }
     /// ```
     ///
@@ -127,11 +128,12 @@ impl TokenBucket {
     /// # Example
     ///
     /// ```
+    /// # use tokenbucket::TokenBucket;
     /// let mut token_bucket = TokenBucket::new(5.0, 100.0);
     /// match token_bucket.acquire(1.0) {
-    ///    Ok(rate)  => println!("acquired: rate = {}", rate)
-    ///    Err(rate) => println!("rate limited: rate = {}", rate)
-    /// }
+    ///    Ok(rate)  => println!("acquired: rate = {}", rate),
+    ///    Err(rate) => println!("rate limited: rate = {}", rate),
+    /// };
     /// ```
     pub fn acquire(&mut self, count: f64) -> TokenAcquisitionResult {
         let now = SystemTime::now();
