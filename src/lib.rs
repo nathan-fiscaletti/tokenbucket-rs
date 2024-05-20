@@ -165,3 +165,70 @@ impl TokenBucket {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{thread, time::Duration};
+
+    /// This module contains unit tests for the TokenBucket implementation.
+
+    /// 1. **Initial Token Acquisition**:
+    ///    - Test acquiring tokens immediately after creating a new TokenBucket.
+    ///    - The bucket should have enough tokens initially, so the acquisition should succeed.
+    #[test]
+    fn test_initial_acquire() {
+        let mut bucket = TokenBucket::new(1.0, 1.0);
+        let result = bucket.acquire(1.0);
+        assert!(result.is_ok());
+    }
+
+    /// 2. **Token Acquisition When Tokens Are Available**:
+    ///    - Test acquiring tokens after waiting for some time.
+    ///    - After waiting for a sufficient duration, the bucket should have replenished tokens, so the acquisition should succeed.
+    #[test]
+    fn test_acquire_when_tokens_available() {
+        let mut bucket = TokenBucket::new(1.0, 1.0);
+        let result = bucket.acquire(1.0);
+        assert!(result.is_ok());
+        thread::sleep(Duration::from_secs(1));
+        let result = bucket.acquire(1.0);
+        assert!(result.is_ok());
+    }
+
+    /// 3. **Token Acquisition When Tokens Are Not Available**:
+    ///    - Test acquiring more tokens than available in the bucket.
+    ///    - If the requested number of tokens exceeds the available tokens, the acquisition should fail.
+    #[test]
+    fn test_acquire_when_tokens_not_available() {
+        let mut bucket = TokenBucket::new(1.0, 1.0);
+        let result = bucket.acquire(2.0);
+        assert!(result.is_err());
+    }
+
+    /// 4. **Token Acquisition with Replenishment**:
+    ///    - Test acquiring tokens, waiting for replenishment, and then acquiring again.
+    ///    - After the initial acquisition, wait for some time to allow tokens to replenish, then attempt to acquire tokens again.
+    #[test]
+    fn test_acquire_with_replenish() {
+        let mut bucket = TokenBucket::new(1.0, 2.0);
+        let result1 = bucket.acquire(1.0);
+        assert!(result1.is_ok());
+        thread::sleep(Duration::from_secs(1));
+        let result2 = bucket.acquire(1.0);
+        assert!(result2.is_ok());
+    }
+
+    /// 5. **Rate Limiting Behavior**:
+    ///    - Test acquiring tokens too quickly in succession.
+    ///    - If tokens are requested at a higher rate than they are replenished, the acquisition should fail due to rate limiting.
+    #[test]
+    fn test_rate_limited() {
+        let mut bucket = TokenBucket::new(1.0, 1.0);
+        let result1 = bucket.acquire(1.0);
+        assert!(result1.is_ok());
+        thread::sleep(Duration::from_millis(500));
+        let result2 = bucket.acquire(1.0);
+        assert!(result2.is_err());
+    }
+}
