@@ -113,17 +113,22 @@ impl TokenBucket {
     ///
     ///    1. `self.r` tokens will be added for every second that has
     ///        elapsed since the last invocation of acquire().
-    ///    2. `count` tokens will be removed from the bucket.
+    ///    2. `count` tokens will be removed from the bucket if there are enough tokens available.
     ///    3. The tokens will never exceed the maximum burst value
     ///        configured in `self.b`, nor will it be less than 0.
     ///
     /// ```ignore
-    /// self.tokens = min { b, max { 0, tokens + rS - count } }
+    /// self.tokens = min { b, tokens + rS }
     /// ```
     ///
     /// # Arguments
     ///
     /// * `count` - The number of tokens to attempt to acquire.
+    ///
+    /// # Returns
+    ///
+    /// * `Ok(rate)` - if the requested number of tokens were successfully acquired. `rate` is the rate of token acquisition in tokens per second.
+    /// * `Err(rate)` - if the requested number of tokens could not be acquired. `rate` is the rate of token acquisition in tokens per second.
     ///
     /// # Example
     ///
@@ -140,17 +145,23 @@ impl TokenBucket {
         let duration_ms: u128 = now.duration_since(self.last)
                                    .expect("clock went backwards")
                                    .as_millis();
-        let allowed = self.tokens > count;
-        self.tokens = self.b.min(
-            0f64.max(
-                self.tokens
-                + (self.r * duration_ms as f64) / 1000 as f64
-                - count,
-            ),
-        );
-        let rate :f64 = (1f64 / duration_ms as f64) * 1000 as f64;
-        self.last = now;
 
-        if allowed { Ok(rate) } else { Err(rate) }
+        // Replenish tokens based on the time passed
+        self.tokens = self.b.min(
+            self.tokens + (self.r * duration_ms as f64) / 1000.0,
+        );
+
+        // Check if there are enough tokens available
+        let allowed = self.tokens >= count;
+
+        if allowed {
+            self.tokens -= count;
+            self.last = now;
+            let rate: f64 = (1f64 / duration_ms as f64) * 1000.0;
+            Ok(rate)
+        } else {
+            let rate: f64 = (1f64 / duration_ms as f64) * 1000.0;
+            Err(rate)
+        }
     }
 }
