@@ -5,7 +5,7 @@ version = "0.1.5"
 authors = ["Nathan Fiscaletti <nate.fiscaletti@gmail.com>"]
 edition = "2018"
 documentation = "https://docs.rs/tokenbucket/"
-homepage = "https://github.com/nathan-fiscaletti/tokenbucket-rs"
+repository = "https://github.com/nathan-fiscaletti/tokenbucket-rs"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
