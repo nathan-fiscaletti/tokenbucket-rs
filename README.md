@@ -12,7 +12,7 @@ Add the following to your Cargo.toml
 
 ```toml
 [dependencies]
-tokenbucket = "0.1.5"
+tokenbucket = "0.1.6"
 ```
 
 ## Usage
